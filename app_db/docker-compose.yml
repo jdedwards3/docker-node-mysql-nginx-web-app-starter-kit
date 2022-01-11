@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  app_db:
+    container_name: app_db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    networks:
+      app_network:
+        aliases:
+          - app_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - "${PWD}/app_db/init_app_db.sql:/docker-entrypoint-initdb.d/init_app_db.sql"
+      - app_db:/var/lib/mysql
+volumes:
+  app_db:
+    name: app_db
+networks:
+  app_network:
+    name: app_network

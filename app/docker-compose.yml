@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  app:
+    container_name: app
+    image: app
+    env_file:
+      - ${PWD}/.env
+    build:
+      context: ${PWD}/app
+      args:
+        - NODE_ENV=${NODE_ENV}
+    command:
+      [
+        "./wait-for-it",
+        "app_db:3306",
+        "--strict",
+        "--timeout=60",
+        "--",
+        "npm",
+        "run",
+        "${NODE_ENV}",
+      ]
+    restart: unless-stopped
+    networks:
+      app_network:
+        aliases:
+          - app
+    volumes:
+      - "${PWD}/app/src:/usr/app/src"
+    # This port is always exposed and should not be unless app/.env DEBUG_PORT is set to a port and app/.env NODE_ENV=development
+    # see README.md - "Deploy to production"
+    ports:
+      - ${DEBUG_PORT}:${DEBUG_PORT}
+networks:
+  app_network:
+    name: app_network

@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  cron:
+    container_name: cron
+    image: cron
+    build:
+      context: ${PWD}/cron
+    restart: unless-stopped
+    extra_hosts:
+      - "app.localhost:host-gateway"
+    networks:
+      - app_network
+    volumes:
+      - app_letsencrypt:/etc/letsencrypt
+networks:
+  app_network:
+    name: app_network
+volumes:
+  app_letsencrypt:
+    name: app_letsencrypt

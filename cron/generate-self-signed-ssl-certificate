@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+mkdir -p /etc/ssl/certs
+mkdir -p /etc/ssl/private
+
+openssl genrsa -out /etc/ssl/private/applocalhostCA.key 2048
+openssl req -x509 -new -nodes -key /etc/ssl/private/applocalhostCA.key -sha256 -days 365 -subj "/CN=applocalhost/emailAddress=admin@example.com/C=XX/ST=XX/L=XX/O=applocalhostCA/OU=Development" -out /etc/ssl/certs/applocalhostCA.pem
+
+# certbot nginx installer is only used to copy /etc/letsencrypt/options-ssl-nginx.conf, example.com domain is used
+certbot certonly --staging -i nginx --standalone --non-interactive --register-unsafely-without-email --agree-tos --no-eff-email --force-renewal --cert-name applocalhost -d example.com
+
+# delete certificate created by certbot
+certbot delete --non-interactive --cert-name applocalhost
+
+# In nginx/conf.d/app.conf the corresponding paths must match the ${certPath}
+certPath="/etc/letsencrypt/live/app.localhost"
+
+mkdir -p ${certPath}
+touch /root/openssl.cnf
+printf '[req]\nprompt=no\ndefault_bits=2048\ndistinguished_name=req_distinguished_name\n[req_distinguished_name]\nC=XX\nST=XX\nL=XX\nO=applocalhostCA\nOU=Development\nCN=applocalhost\n[v3_ca]\nsubjectAltName=@alt_names\n[alt_names]\nDNS.1=localhost\nDNS.2=app.localhost' > /root/openssl.cnf
+
+# need this file in the shared volume to use in /start
+mkdir -p /etc/letsencrypt/.applocalhostcerts/
+cp /etc/ssl/certs/applocalhostCA.pem /etc/letsencrypt/.applocalhostcerts/applocalhostCA.pem
+
+# referenced in nginx/conf.d/app.conf
+openssl req -new -sha256 -nodes -newkey rsa:2048 -keyout ${certPath}/privkey.pem -out /etc/ssl/private/applocalhost.csr -config /root/openssl.cnf
+openssl x509 -req -in /etc/ssl/private/applocalhost.csr -CA /etc/ssl/certs/applocalhostCA.pem -CAkey /etc/ssl/private/applocalhostCA.key -CAcreateserial -out ${certPath}/fullchain.pem -sha256 -days 365 -extfile /root/openssl.cnf -extensions v3_ca
+openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
+
+cat /etc/ssl/certs/applocalhostCA.pem > /usr/local/share/ca-certificates/applocalhostCA.crt
+cat /usr/local/share/ca-certificates/applocalhostCA.crt >> /etc/ssl/certs/ca-certificates.crt

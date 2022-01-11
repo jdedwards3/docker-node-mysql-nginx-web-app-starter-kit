@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My Account</title>
+    <link rel="stylesheet" href="/reset.css" />
+  </head>
+  <body>
+    <h1>My Account</h1>
+    <p>
+      <%= user.first_name ? user.first_name : ''%><%= user.last_name ? ' ' +
+      user.last_name : ""%>
+    </p>
+    <p>Email:<%= user.email %></p>
+    <p>first name: <%= user.first_name %></p>
+    <p>last name:<%=user.last_name %></p>
+    <hr />
+    <p><a href="/update-my-account/">Update My Account</a></p>
+    <p><a href="/update-password/">Update Password</a></p>
+    <hr />
+    <p><a href="/">Home</a></p>
+  </body>
+</html>

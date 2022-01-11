@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    networks:
+      - app_network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - app_letsencrypt:/etc/letsencrypt
+      - "${PWD}/nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf"
+      - "${PWD}/app/public:/usr/share/nginx/html/app/public"
+volumes:
+  app_letsencrypt:
+    name: app_letsencrypt
+networks:
+  app_network:
+    name: app_network

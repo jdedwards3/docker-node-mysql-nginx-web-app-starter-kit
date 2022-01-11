@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+# update this command to use certbot to generate let's encrypt ssl certificate for your production domain
+# also make sure to update /nginx/conf.d/app.conf with a new server block for your domain
+# you will also probably need to use dns authentication with a certbot plugin
+certbot certonly -i nginx --email admin@example.com --agree-tos --no-eff-email --keep-until-expiring --cert-name example.com -d example.com

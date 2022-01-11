@@ -1,0 +1,8 @@
+* * * * * echo "...running cron tasks..." > /proc/1/fd/1 2>&1
+
+# this will ping the app container using self signed certificates
+# */5 * * * * curl https://app.localhost/ > /proc/1/fd/1 2>&1
+
+# PRODUCTION GENERATE SSL CERTIFICATES
+# 0 */12 * * * /root/generate-ssl-certificate > /proc/1/fd/1 2>&1
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# rebuild containers
+docker-compose --env-file .env -f cron/docker-compose.yml -f nginx/docker-compose.yml -f app_db/docker-compose.yml -f app/docker-compose.yml build --no-cache
+
+# start containers
+docker-compose --env-file .env -f cron/docker-compose.yml -f nginx/docker-compose.yml -f app_db/docker-compose.yml -f app/docker-compose.yml up -d
+
+# setup self signed ssl certificate for app.localhost generated in /cron/generate-self-signed-ssl-certificate
+mkdir -p ~/app_tmp
+
+docker cp cron:/etc/letsencrypt/.applocalhostcerts/applocalhostCA.pem ~/app_tmp/applocalhostCA.pem
+
+# on local computer add self-signed ssl certificate
+certutil -d sql:$HOME/.pki/nssdb -A -t "CT,c,c" -n applocalhostCA -i ~/app_tmp/applocalhostCA.pem
+
+rm -r ~/app_tmp

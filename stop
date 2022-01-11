@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# stop containers
+docker-compose --env-file .env -f cron/docker-compose.yml -f nginx/docker-compose.yml -f app_db/docker-compose.yml -f app/docker-compose.yml down
+
+# on local computer delete old certificate 
+certutil -D -d sql:$HOME/.pki/nssdb -n applocalhostCA
+
