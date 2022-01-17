@@ -9,6 +9,7 @@ services:
       context: ${PWD}/app
       args:
         - NODE_ENV=${NODE_ENV}
+        - PORT=${PORT}
     command:
       [
         "./wait-for-it",
