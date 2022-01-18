@@ -5,4 +5,3 @@ docker-compose --env-file .env -f cron/docker-compose.yml -f nginx/docker-compos
 
 # on local computer delete old certificate 
 certutil -D -d sql:$HOME/.pki/nssdb -n applocalhostCA
-
