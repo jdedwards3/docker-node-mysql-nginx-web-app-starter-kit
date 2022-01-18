@@ -5,8 +5,8 @@ const helmet = require("helmet");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 
-const db = require("./db");
-const sessionStore = new MySQLStore({}, db);
+const { connection } = require("./db");
+const sessionStore = new MySQLStore({}, connection);
 
 const {
   homeController,
