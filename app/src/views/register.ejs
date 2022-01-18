@@ -9,22 +9,26 @@
   <body>
     <p><a href="/login/">Login</a></p>
     <h1>Register</h1>
-    <% if (locals.errors) { %>
+    <% if (locals.registerViewModel.errors) { %>
     <ul>
-      <% errors.forEach(function(error) { %>
+      <% registerViewModel.errors.forEach(function(error) { %>
       <li><%= error.msg %></li>
       <% }); %>
     </ul>
     <% } %>
     <form method="post" action="/register/">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= registerViewModel.csrfToken %>"
+      />
       <p>
         <label>Email:</label>
         <input
           required
           type="email"
           name="email"
-          value="<%= locals.user ? user.email : '' %>"
+          value="<%= locals.registerViewModel.email ? registerViewModel.email : '' %>"
         />
       </p>
       <p>
