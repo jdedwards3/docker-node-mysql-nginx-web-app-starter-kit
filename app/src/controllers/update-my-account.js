@@ -10,8 +10,8 @@ router.get("/", loginRequired, csrfProtection, function (req, res) {
   db.query(
     "SELECT email, first_name, last_name FROM `app_user` where id = ?",
     [req.session.user.id],
-    function (err, results) {
-      if (err) throw err;
+    function (error, results) {
+      if (error) throw error;
       const user = results[0];
       res.render("update-my-account", { csrfToken: req.csrfToken(), user });
     }
@@ -52,8 +52,8 @@ router.post(
     db.query(
       "SELECT id FROM `app_user` WHERE email = ? LIMIT 1",
       [req.body.email],
-      function (err, results) {
-        if (err) throw err;
+      function (error, results) {
+        if (error) throw error;
         if (results.length > 0 && results[0].id !== req.session.user.id) {
           res.render("update-my-account", {
             errors: [{ msg: "This email is already linked to an account." }],

@@ -61,9 +61,9 @@ app.use(function (req, res) {
   res.render("404");
 });
 
-app.use(function (err, req, res, next) {
+app.use(function (error, req, res, next) {
   if (process.env.NODE_ENV === "development") {
-    console.error(err.stack);
+    console.error(error.stack);
   }
   res.status(500);
   res.render("500");
