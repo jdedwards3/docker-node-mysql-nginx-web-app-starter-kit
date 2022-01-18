@@ -8,22 +8,26 @@
   </head>
   <body>
     <h1>Login</h1>
-    <% if (locals.errors) { %>
+    <% if (locals.loginViewModel.errors) { %>
     <ul>
-      <% errors.forEach(function(error) { %>
+      <% loginViewModel.errors.forEach(function(error) { %>
       <li><%= error.msg %></li>
       <% }); %>
     </ul>
     <% } %>
     <form method="post" action="/login/">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= loginViewModel.csrfToken %>"
+      />
       <p>
         <label>Email:</label>
         <input
           required
           type="email"
           name="email"
-          value="<%= locals.user ? user.email : '' %>"
+          value="<%= locals.loginViewModel.email ? loginViewModel.email : '' %>"
         />
       </p>
       <p>
