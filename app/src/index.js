@@ -8,14 +8,13 @@ const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const sessionStore = new MySQLStore({}, db);
 
-const { loginRequired, csrfProtection } = require("./middleware");
-const { UserModel } = require("./models");
-const { HomeViewModel } = require("./viewModels");
 const {
+  homeController,
   loginController,
   registerController,
   myAccountController,
   updateMyAccountController,
+  logoutController,
 } = require("./controllers");
 
 const app = express();
@@ -45,27 +44,17 @@ app.use(
   })
 );
 
-app.get("/", loginRequired, csrfProtection, function (req, res) {
-  const user = new UserModel({ id: req.session.user.id });
-  user.read(function (user) {
-    const homeViewModel = new HomeViewModel({ email: user.email });
-    res.render("home", { homeViewModel });
-  });
-});
+app.use("/", homeController);
 
-app.use("/login/", loginController);
+app.use("/login", loginController);
 
-app.use("/register/", registerController);
+app.use("/register", registerController);
 
 app.use("/my-account", myAccountController);
 
-app.use("/update-my-account/", updateMyAccountController);
+app.use("/update-my-account", updateMyAccountController);
 
-app.get("/logout/", loginRequired, function (req, res) {
-  req.session.destroy(function () {
-    res.redirect("/login/");
-  });
-});
+app.use("/logout", logoutController);
 
 app.use(function (req, res) {
   res.status(404);
