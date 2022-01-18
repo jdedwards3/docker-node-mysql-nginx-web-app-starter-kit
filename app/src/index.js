@@ -30,8 +30,8 @@ app.use(helmet());
 
 app.use(
   session({
-    secret: "secret",
-    name: "appSessionIDCookieName",
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    name: process.env.EXPRESS_SESSION_NAME,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -69,4 +69,4 @@ app.use(function (err, req, res, next) {
   res.render("500");
 });
 
-app.listen(3000);
+app.listen(process.env.PORT);
